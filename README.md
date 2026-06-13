@@ -20,8 +20,15 @@ mic audio -> Voxtral Realtime STT -> editable transcript
 - Chat-style conversation view with per-session history.
 - Configurable personas: General Helper, Technical Tutor, Course Q&A
   Assistant, Sarcastic Dev.
-- Built-in Voxtral TTS voices, plus zero-shot voice cloning from a short
-  uploaded clip (`ref_audio`, free-plan compatible).
+- Response language selector — reply in English, French, Spanish,
+  German, Italian, or Portuguese regardless of the language the user
+  spoke or typed in (steered via the LLM system prompt, since the TTS
+  API has no language parameter and speaks whatever text it's given).
+- Built-in Voxtral TTS voices, automatically filtered to an
+  accent-matching preset when the selected response language has one
+  (English/French), plus zero-shot voice cloning from a short uploaded
+  clip (`ref_audio`, free-plan compatible) — the only way to get a
+  native accent for languages without a built-in preset.
 - Stop-speaking control, with overlapping playback prevented.
 - Technical drawer showing the last transcript, ASR/LLM/TTS latency, and
   a debug log.
@@ -53,11 +60,24 @@ for a full walkthrough of every feature and troubleshooting tips.
 
 ```
 voice-assistant/
-├── server.py              # FastAPI backend: STT/LLM/TTS orchestration + state machine
+├── server.py              # FastAPI app, WebSocket endpoint, control-message dispatch
+├── routes.py              # REST endpoints: static page, presets, voices, languages, voice cloning
+├── conversation.py         # Conversation orchestrator: LLM response + TTS playback per turn
+├── asr.py                  # ASR session manager: realtime STT for one push-to-talk utterance
+├── session.py              # Per-connection session state + WebSocket message helpers
+├── config.py               # Mistral client, model IDs, presets, languages, tunables
 ├── static/
 │   ├── index.html
 │   ├── style.css
-│   └── app.js
+│   ├── app.js               # Init, dropdown wiring, WebSocket message dispatch
+│   └── js/
+│       ├── dom.js            # Shared DOM element references
+│       ├── ws.js              # WebSocket connection helper
+│       ├── state.js           # UI state machine (state badge, status hint)
+│       ├── conversation.js    # Conversation feed rendering
+│       ├── audio.js           # Mic capture + TTS playback
+│       ├── voice-clone.js     # Voice cloning upload
+│       └── debug.js           # Technical details drawer / debug log
 ├── requirements.txt
 ├── .env.example
 ├── SPEC.md                 # original project specification
@@ -66,9 +86,11 @@ voice-assistant/
 
 ## Configuration
 
-Models, presets (system prompts + `reasoning_effort`), default voice
-preferences, and response limits (`max_tokens`, history length) are all
-defined as structured config near the top of `server.py`.
+Models, presets (system prompts + `reasoning_effort`), response
+languages (with their `voice_tags` for accent-matched voice
+filtering), default voice preferences, and response limits
+(`max_tokens`, history length) are all defined as structured config in
+`config.py`.
 
 ## Non-goals (v1)
 

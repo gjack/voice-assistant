@@ -76,13 +76,29 @@ Use the **Persona** dropdown to switch between starter prompt packs:
 Changing persona takes effect on the next response; existing
 conversation history is kept.
 
+### Change response language
+Use the **Language** dropdown to choose the language of the
+assistant's reply — independent of the language you spoke or typed
+in. The default, **Auto (match user)**, lets the LLM reply in
+whatever language you used. Picking a specific language (English,
+French, Spanish, German, Italian, Portuguese) adds an instruction to
+the system prompt telling the assistant to always reply in that
+language; the TTS audio follows automatically, since it speaks
+whatever text it's given.
+
 ### Change voice / clone a voice
 - Use the **Voice** dropdown to pick any built-in Voxtral TTS voice.
+  When the selected response language is English or French, the list
+  is automatically filtered to voices with a matching accent
+  (`en_us`/`en_gb` or `fr_fr`).
+- For other languages (Spanish, German, Italian, Portuguese) there's
+  no built-in voice with a native accent, so the full voice list is
+  shown along with a hint suggesting you clone a voice instead.
 - Click **Clone voice…** to upload a short reference clip (a few
   seconds of clean speech). This registers a zero-shot cloned voice
   (via `ref_audio`, free-plan compatible) and selects it automatically.
-  The cloned voice is kept only for the lifetime of the running server
-  process.
+  Cloned voices stay available regardless of the selected language and
+  are kept only for the lifetime of the running server process.
 
 ### Clear the conversation
 **Clear chat** wipes the on-screen history and the history sent to the
@@ -108,6 +124,11 @@ Click **Technical details** at the bottom to expand a panel showing:
 - **Nothing happens on Space** — push-to-talk via Space is disabled while
   the transcript text box or a dropdown is focused; click elsewhere on
   the page first, or use the **Hold to Talk** button.
+- **Spanish/German/Italian/Portuguese replies sound accented** — the
+  built-in Voxtral TTS voices only have native English (`en_us`/`en_gb`)
+  and French (`fr_fr`) accents, so those languages are read by an
+  English- or French-accented voice. Use **Clone voice…** with a clip of
+  a native speaker to get a more natural accent.
 
 ## 5. Notes
 
