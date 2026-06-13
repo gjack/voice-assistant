@@ -1,0 +1,391 @@
+:root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --panel-alt: #1f232c;
+    --border: #2b303b;
+    --text: #e6e8ec;
+    --text-dim: #9aa1ad;
+    --accent: #6366f1;
+    --accent-hover: #4f52d6;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+
+    --state-idle-bg: #2b303b;
+    --state-idle-fg: #aab1bf;
+    --state-listening-bg: #14361f;
+    --state-listening-fg: #4ade80;
+    --state-transcribing-bg: #0f3a3f;
+    --state-transcribing-fg: #2dd4bf;
+    --state-thinking-bg: #3a2e0c;
+    --state-thinking-fg: #fbbf24;
+    --state-speaking-bg: #1e2a4a;
+    --state-speaking-fg: #93c5fd;
+    --state-error-bg: #3a1414;
+    --state-error-fg: #f87171;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+.app {
+    max-width: 760px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem 1.25rem 1.5rem;
+    gap: 0.9rem;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.app-header h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-top: 0.15rem;
+}
+
+/* State badge */
+.state-badge {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    background: var(--state-idle-bg);
+    color: var(--state-idle-fg);
+    white-space: nowrap;
+}
+
+.state-idle { background: var(--state-idle-bg); color: var(--state-idle-fg); }
+.state-listening { background: var(--state-listening-bg); color: var(--state-listening-fg); animation: pulse 1.4s ease-in-out infinite; }
+.state-transcribing { background: var(--state-transcribing-bg); color: var(--state-transcribing-fg); animation: pulse 1.6s ease-in-out infinite; }
+.state-thinking { background: var(--state-thinking-bg); color: var(--state-thinking-fg); animation: pulse 1.6s ease-in-out infinite; }
+.state-speaking { background: var(--state-speaking-bg); color: var(--state-speaking-fg); }
+.state-error { background: var(--state-error-bg); color: var(--state-error-fg); }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+/* Toolbar */
+.toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.6rem 0.75rem;
+}
+
+.toolbar-field {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+.toolbar-field select {
+    background: var(--panel-alt);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.82rem;
+    max-width: 11rem;
+}
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    font-family: inherit;
+}
+
+.btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: var(--panel-alt);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #262b35;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: var(--danger-hover);
+}
+
+/* Conversation */
+.conversation {
+    flex: 1;
+    min-height: 280px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.75rem 0.25rem;
+}
+
+.message {
+    max-width: 85%;
+    padding: 0.65rem 0.9rem;
+    border-radius: 12px;
+    line-height: 1.45;
+    font-size: 0.92rem;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.message-user {
+    align-self: flex-end;
+    background: var(--accent);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.message-assistant {
+    align-self: flex-start;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+}
+
+.message-error {
+    align-self: center;
+    background: var(--state-error-bg);
+    color: var(--state-error-fg);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.message-empty {
+    align-self: center;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+/* Status hint */
+.status-hint {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+}
+
+/* Control panel */
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.75rem;
+}
+
+.transcript-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.transcript-input {
+    flex: 1;
+    resize: none;
+    background: var(--panel-alt);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.92rem;
+    font-family: inherit;
+    outline: none;
+}
+
+.transcript-input:focus {
+    border-color: var(--accent);
+}
+
+.transcript-input.has-transcript {
+    border-color: var(--state-listening-fg);
+    background: #10241a;
+}
+
+.transcript-row .btn-primary {
+    align-self: flex-end;
+}
+
+.actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.talk-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid var(--border);
+    background: var(--panel-alt);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.7rem 1.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: all 0.15s;
+    font-family: inherit;
+}
+
+.talk-btn:hover:not(:disabled) {
+    border-color: #444c5c;
+}
+
+.talk-btn.active {
+    border-color: var(--state-listening-fg);
+    background: var(--state-listening-bg);
+    color: var(--state-listening-fg);
+    box-shadow: 0 0 18px rgba(74, 222, 128, 0.25);
+}
+
+.talk-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.talk-icon {
+    font-size: 1.2rem;
+}
+
+/* Debug drawer */
+.debug-drawer {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+
+.debug-drawer summary {
+    cursor: pointer;
+    padding: 0.6rem 0.85rem;
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+.debug-content {
+    padding: 0 0.85rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.debug-row {
+    color: var(--text-dim);
+}
+
+.debug-row span#debug-transcript {
+    color: var(--text);
+}
+
+.latency-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.latency-item strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.debug-log {
+    max-height: 140px;
+    overflow-y: auto;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.6rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--text-dim);
+}
+
+.debug-log div {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 560px) {
+    .app {
+        padding: 1rem;
+    }
+
+    .app-header h1 {
+        font-size: 1.15rem;
+    }
+
+    .toolbar-field select {
+        max-width: 8rem;
+    }
+
+    .talk-btn {
+        padding: 0.65rem 1.1rem;
+        font-size: 0.88rem;
+    }
+}
