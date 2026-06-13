@@ -74,6 +74,22 @@ PRESETS = {
 
 DEFAULT_PRESET = "helper"
 
+# voice_tags match the `languages` field returned by client.audio.voices.list()
+# (e.g. "en_us", "en_gb", "fr_fr"). An empty list means no built-in voice is
+# native to that language -- voice cloning via ref_audio is the only way to
+# get a native accent.
+LANGUAGES = {
+    "auto": {"label": "Auto (match user)", "voice_tags": []},
+    "en": {"label": "English", "voice_tags": ["en_us", "en_gb"]},
+    "fr": {"label": "French", "voice_tags": ["fr_fr"]},
+    "es": {"label": "Spanish", "voice_tags": []},
+    "de": {"label": "German", "voice_tags": []},
+    "it": {"label": "Italian", "voice_tags": []},
+    "pt": {"label": "Portuguese", "voice_tags": []},
+}
+
+DEFAULT_LANGUAGE = "auto"
+
 # In-memory store for zero-shot voice clones: clone_id -> base64 ref audio.
 # Process-lifetime only, matches the "no persistent account system" non-goal.
 CLONED_VOICES: dict[str, str] = {}

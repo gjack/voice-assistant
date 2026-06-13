@@ -27,11 +27,18 @@
                 <select id="voice-select"></select>
             </label>
 
+            <label class="toolbar-field">
+                <span>Language</span>
+                <select id="language-select"></select>
+            </label>
+
             <button id="clone-btn" class="btn btn-secondary" type="button">Clone voice…</button>
             <input id="clone-file" type="file" accept="audio/*" hidden>
 
             <button id="clear-btn" class="btn btn-secondary" type="button">Clear chat</button>
         </div>
+
+        <p id="voice-hint" class="voice-hint" hidden></p>
 
         <main id="conversation" class="conversation" aria-live="polite">
             <div id="empty-state" class="message-empty">Your conversation will appear here.</div>

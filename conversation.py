@@ -7,7 +7,7 @@ import time
 
 from fastapi import WebSocket
 
-from config import client, LLM_MODEL, TTS_MODEL, PRESETS, DEFAULT_PRESET, RESPONSE_CONFIG, CLONED_VOICES
+from config import client, LLM_MODEL, TTS_MODEL, PRESETS, DEFAULT_PRESET, LANGUAGES, RESPONSE_CONFIG, CLONED_VOICES
 from session import SessionState, make_message, send_state, send_error, send_debug
 
 
@@ -20,7 +20,15 @@ async def handle_response(ws: WebSocket, state: SessionState, user_text: str):
     await ws.send_json({"type": "message", "message": make_message("user", user_text, "voice")})
 
     preset = PRESETS.get(state.preset, PRESETS[DEFAULT_PRESET])
-    messages = [{"role": "system", "content": preset["system_prompt"]}]
+    system_prompt = preset["system_prompt"]
+    if state.language != "auto":
+        language_label = LANGUAGES.get(state.language, {}).get("label", state.language)
+        system_prompt += (
+            f"\n\nAlways respond in {language_label}, regardless of what "
+            "language the user writes or speaks in."
+        )
+
+    messages = [{"role": "system", "content": system_prompt}]
     messages.extend(state.history[-RESPONSE_CONFIG["history_limit"]:])
 
     t0 = time.monotonic()

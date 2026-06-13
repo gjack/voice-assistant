@@ -218,6 +218,13 @@ body {
     padding: 2rem 1rem;
 }
 
+/* Voice hint */
+.voice-hint {
+    text-align: center;
+    color: var(--state-error-fg);
+    font-size: 0.8rem;
+}
+
 /* Status hint */
 .status-hint {
     text-align: center;

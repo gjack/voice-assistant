@@ -10,7 +10,7 @@ from pathlib import Path
 from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import FileResponse
 
-from config import client, PRESETS, DEFAULT_PRESET, DEFAULT_VOICE_PREFERENCES, CLONED_VOICES
+from config import client, PRESETS, DEFAULT_PRESET, LANGUAGES, DEFAULT_LANGUAGE, DEFAULT_VOICE_PREFERENCES, CLONED_VOICES
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -30,12 +30,23 @@ async def get_presets():
     }
 
 
+@router.get("/api/languages")
+async def get_languages():
+    return {
+        "languages": {
+            key: {"label": l["label"], "voice_tags": l["voice_tags"]}
+            for key, l in LANGUAGES.items()
+        },
+        "default": DEFAULT_LANGUAGE,
+    }
+
+
 @router.get("/api/voices")
 async def get_voices():
     """List built-in TTS voices and resolve a sensible default."""
     try:
         result = await asyncio.to_thread(client.audio.voices.list, limit=50)
-        voices = [{"id": v.id, "name": v.name} for v in result.items]
+        voices = [{"id": v.id, "name": v.name, "languages": v.languages or []} for v in result.items]
     except Exception as e:
         return {"voices": [], "default_voice_id": None, "error": str(e)}
 

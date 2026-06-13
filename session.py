@@ -9,7 +9,7 @@ from typing import Optional
 
 from fastapi import WebSocket
 
-from config import DEFAULT_PRESET
+from config import DEFAULT_PRESET, DEFAULT_LANGUAGE
 
 
 @dataclass
@@ -17,6 +17,7 @@ class SessionState:
     status: str = "idle"  # idle | listening | transcribing | thinking | speaking | error
     preset: str = DEFAULT_PRESET
     voice_id: Optional[str] = None
+    language: str = DEFAULT_LANGUAGE
     history: list = field(default_factory=list)
     pending_user_text: str = ""
     pending_assistant_text: str = ""

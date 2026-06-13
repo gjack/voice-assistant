@@ -16,7 +16,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
 from asr import handle_listening
-from config import PRESETS
+from config import PRESETS, LANGUAGES
 from conversation import handle_response
 from routes import router
 from session import SessionState, send_state
@@ -81,6 +81,11 @@ async def handle_control_message(ws: WebSocket, state: SessionState, data: dict)
 
     elif msg_type == "set_voice":
         state.voice_id = data.get("voice_id") or None
+
+    elif msg_type == "set_language":
+        language = data.get("language")
+        if language in LANGUAGES:
+            state.language = language
 
     elif msg_type == "clear_history":
         state.history.clear()
